@@ -4,13 +4,16 @@ public struct ProxmoxResourceList: Decodable {
 }
 
 /// Common Proxmox resource types.
-public enum ProxmoxResourceType: String, Decodable {
+public enum ProxmoxResourceType: String, Decodable, CaseIterable {
+    
+    
     case node
+    case storage
+    case pool
     case qemu
     case lxc
-    case storage
-    case cluster
-    case pool
+    case openvz
+    case sdn
     case unknown
 
     public init(from decoder: Decoder) throws {
