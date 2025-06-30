@@ -1,3 +1,6 @@
+import Combine
+import Foundation
+
 /// Represents the list of Proxmox resources.
 public struct ProxmoxResourceList: Decodable {
     public let data: [ProxmoxResource]
@@ -8,12 +11,12 @@ public enum ProxmoxResourceType: String, Decodable, CaseIterable {
     
     
     case node
-    case storage
-    case pool
     case qemu
     case lxc
-    case openvz
+    case storage
     case sdn
+    case pool
+    case openvz
     case unknown
 
     public init(from decoder: Decoder) throws {
@@ -41,4 +44,23 @@ public struct ProxmoxResource: Decodable {
     public let vmid: Int?
     public let template: Int?
     public let description: String?
+    
+    public init(id: String, type: ProxmoxResourceType, status: String? = nil, name: String? = nil, node: String? = nil, maxmem: Int? = nil, maxcpu: Int? = nil, mem: Int? = nil, cpu: Double? = nil, disk: Int? = nil, maxdisk: Int? = nil, uptime: Int? = nil, vmid: Int? = nil, template: Int? = nil, description: String? = nil) {
+        self.id = id
+        self.type = type
+        self.status = status
+        self.name = name
+        self.node = node
+        self.maxmem = maxmem
+        self.maxcpu = maxcpu
+        self.mem = mem
+        self.cpu = cpu
+        self.disk = disk
+        self.maxdisk = maxdisk
+        self.uptime = uptime
+        self.vmid = vmid
+        self.template = template
+        self.description = description
+    }
 }
+
