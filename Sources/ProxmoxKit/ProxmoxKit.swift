@@ -24,7 +24,7 @@ public class ProxmoxKit {
     /// On successful authentication, stores a cookie representing the Proxmox ticket to be used for subsequent requests.
     ///
     /// - Parameters:
-    ///   - username: The username to authenticate with.
+    ///   - username: The username to authenticate with (format: user@realm, e.g., "root@pam").
     ///   - password: The password to authenticate with.
     /// - Returns: A `Ticket` object containing authentication details.
     /// - Throws: An error if authentication fails, no data is returned, or decoding of the response fails.
@@ -84,9 +84,8 @@ public class ProxmoxKit {
     /// - Returns: An array of `ProxmoxResource` representing the cluster resources.
     /// - Throws: An error if the request fails, no data is returned, or decoding of the response fails.
     public func getResources() async throws -> [ProxmoxResource] {
-        let resourcesURL = url.appendingPathComponent("/api2/json/cluster/resources")
+        let resourcesURL = url.appendingPathComponent("api2/json/cluster/resources")
         let data = try await httpGet(resourcesURL)
-        print(String(data: data, encoding: .utf8))
         let resourceList = try JSONDecoder().decode(ProxmoxResourceList.self, from: data)
         return resourceList.data
     }
