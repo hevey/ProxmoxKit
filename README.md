@@ -307,19 +307,6 @@ let config = ProxmoxConfig(
 let client = ProxmoxClient(config: config)
 ```
 
-## Migration from v1.x
-
-The new version provides a clean, service-oriented API:
-
-```swift
-// Create a client
-let client = try ProxmoxClient.create(host: "192.168.1.100")
-
-// Service access:
-let vms = try await client.vms.list()  // Service-oriented approach
-let resources = try await client.cluster.getResources()  // Cluster operations
-```
-
 ## Requirements
 
 - iOS 13.0+ / macOS 10.15+
