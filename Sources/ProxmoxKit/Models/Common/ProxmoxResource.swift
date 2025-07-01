@@ -1,13 +1,12 @@
-import Combine
 import Foundation
 
 /// Represents the list of Proxmox resources.
-public struct ProxmoxResourceList: Decodable {
+public struct ProxmoxResourceList: Codable {
     public let data: [ProxmoxResource]
 }
 
 /// Common Proxmox resource types.
-public enum ProxmoxResourceType: String, Decodable, CaseIterable {
+public enum ProxmoxResourceType: String, Codable, CaseIterable, Sendable {
     
     
     case node
@@ -27,7 +26,7 @@ public enum ProxmoxResourceType: String, Decodable, CaseIterable {
 }
 
 /// Represents a Proxmox resource.
-public struct ProxmoxResource: Decodable {
+public struct ProxmoxResource: Codable, Sendable {
     public let id: String
     /// The type of the Proxmox resource.
     public let type: ProxmoxResourceType
