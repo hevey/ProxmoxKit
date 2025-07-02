@@ -2,8 +2,8 @@
 
 A modern Swift library for interacting with the Proxmox Virtual Environment API
 
-> **⚠️ PREVIEW RELEASE**  
-> This library is currently in preview and under active development. APIs may change without notice between versions. Use with caution in production environments and pin to specific versions to avoid unexpected breaking changes.
+> **⚠️ DEVELOPMENT VERSION**  
+> This library is currently in active development and has not yet reached a stable release. APIs may change without notice. For production use, we recommend pinning to a specific commit hash rather than using the main branch.
 
 
 
@@ -22,9 +22,19 @@ Add ProxmoxKit to your `Package.swift` dependencies:
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/your-repo/ProxmoxKit.git", from: "0.1.0")
+    .package(url: "https://github.com/hevey/ProxmoxKit.git", branch: "main")
 ]
 ```
+
+Or add it via Xcode:
+1. File → Add Package Dependencies
+2. Enter: `https://github.com/hevey/ProxmoxKit.git`
+3. Select "Branch" and enter `main`
+
+> **Note**: This package is currently in development. We recommend pinning to a specific commit for production use:
+> ```swift
+> .package(url: "https://github.com/hevey/ProxmoxKit.git", revision: "your-commit-hash")
+> ```
 
 ## Quick Start
 
