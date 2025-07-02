@@ -23,11 +23,9 @@ public class NodeService: BaseService {
     public func get(_ nodeName: String) async throws -> Node {
         try ensureAuthenticated()
         
-        let url = buildURL(path: "nodes/\(nodeName)")
-        let data = try await httpClient.get(url)
-        let response = try decode(data, as: ProxmoxResponse<Node>.self)
-        
-        guard let node = response.data else {
+        // The nodes endpoint returns an array, so we need to filter for the specific node
+        let nodes = try await list()
+        guard let node = nodes.first(where: { $0.node == nodeName }) else {
             throw ProxmoxError.resourceNotFound("Node '\(nodeName)' not found")
         }
         
@@ -89,6 +87,20 @@ public class NodeService: BaseService {
         return response.data
     }
     
+    /// Lists all containers on a specific node.
+    /// - Parameter nodeName: The name of the node.
+    /// - Returns: An array of Container objects.
+    /// - Throws: ProxmoxError if the request fails.
+    public func getContainers(_ nodeName: String) async throws -> [Container] {
+        try ensureAuthenticated()
+        
+        let url = buildURL(path: "nodes/\(nodeName)/lxc")
+        let data = try await httpClient.get(url)
+        let response = try decode(data, as: ProxmoxArrayResponse<Container>.self)
+        
+        return response.data
+    }
+
     /// Executes a command on the node (requires appropriate permissions).
     /// - Parameters:
     ///   - nodeName: The name of the node.
