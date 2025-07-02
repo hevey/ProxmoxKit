@@ -29,6 +29,7 @@ public enum ProxmoxError: Error {
     /// Operation not supported.
     case unsupportedOperation(String)
     
+    /// The client has not been initialized properly.
     case notInitialized
 }
 

@@ -1,6 +1,6 @@
 {
-    "swift.path": "/Applications/Xcode-26.0.0-Beta.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "swift.path": "/Volumes/MacOS Beta/Applications/Xcode-26.0.0-Beta.2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
     "swift.swiftEnvironmentVariables": {
-        "DEVELOPER_DIR": "/Applications/Xcode-26.0.0-Beta.2.app/Contents/Developer"
+        "DEVELOPER_DIR": "/Volumes/MacOS Beta/Applications/Xcode-26.0.0-Beta.2.app/Contents/Developer"
     }
 }
