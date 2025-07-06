@@ -3,7 +3,7 @@ import Foundation
 /// Represents a Proxmox node in the cluster.
 public struct Node: Codable, Identifiable, Sendable {
     /// The unique identifier for the node.
-    public var id: String { node }
+    public var id: String
     
     /// The node name.
     public let node: String
@@ -49,6 +49,7 @@ public struct Node: Codable, Identifiable, Sendable {
     
     /// Initializes a new Node.
     public init(
+        id: String,
         node: String,
         type: String? = nil,
         status: String? = nil,
@@ -64,6 +65,7 @@ public struct Node: Codable, Identifiable, Sendable {
         version: String? = nil,
         subscription: String? = nil
     ) {
+        self.id = id
         self.node = node
         self.type = type
         self.status = status
