@@ -43,13 +43,42 @@ jobs:
         # Export the DocC archive to static HTML
         xcrun docc process-archive transform-for-static-hosting \
           .build/Build/Products/Debug/ProxmoxKit.doccarchive \
-          --output-path docs \
+          --output-path docs-generated \
           --hosting-base-path ProxmoxKit
+        
+        # Copy the existing docs directory (with our custom index.html) to final location
+        cp -r docs docs-final
+        
+        # Merge the generated documentation into the existing docs structure
+        if [ -d "docs-generated/documentation" ]; then
+          cp -r docs-generated/documentation docs-final/
+          echo "Copied DocC documentation"
+        fi
+        
+        # Copy any additional assets
+        for dir in css js img data; do
+          if [ -d "docs-generated/$dir" ]; then
+            cp -r "docs-generated/$dir" docs-final/
+            echo "Copied $dir directory"
+          fi
+        done
+        
+        # List final structure
+        echo "Final docs structure:"
+        ls -la docs-final/
+        
+        if [ -f "docs-final/index.html" ]; then
+          echo "✅ Custom index.html preserved"
+        fi
+        
+        if [ -d "docs-final/documentation" ]; then
+          echo "✅ DocC documentation available"
+        fi
           
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: docs
+        path: docs-final
 
   deploy:
     if: github.ref == 'refs/heads/main'
