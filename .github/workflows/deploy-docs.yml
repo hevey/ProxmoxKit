@@ -37,6 +37,11 @@ jobs:
           -scheme ProxmoxKit \
           -destination 'generic/platform=macOS' \
           -derivedDataPath .build
+
+    - name: move index.html
+      run: |
+        mkdir temp
+        mv docs/index.html temp/index.html
           
     - name: Process DocC Archive
       run: |
@@ -45,6 +50,8 @@ jobs:
           .build/Build/Products/Debug/ProxmoxKit.doccarchive \
           --output-path docs \
           --hosting-base-path ProxmoxKit
+        
+        mv -f temp/index.html docs/index.html
           
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
