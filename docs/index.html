@@ -434,7 +434,7 @@
         <a href="https://github.com/hevey/ProxmoxKit">Report issues on GitHub</a>
     </div>
 
-    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme: Light → Dark → Auto" title="Toggle theme">
         <span id="theme-icon">🌙</span>
     </button>
     
@@ -576,15 +576,21 @@
                 if (theme === 'dark') {
                     html.setAttribute('data-theme', 'dark');
                     themeIcon.textContent = '☀️';
+                    themeToggle.setAttribute('aria-label', 'Theme: Dark (click for Auto)');
+                    themeToggle.setAttribute('title', 'Theme: Dark (click for Auto)');
                     localStorage.setItem('theme', 'dark');
                 } else if (theme === 'light') {
                     html.setAttribute('data-theme', 'light');
                     themeIcon.textContent = '🌙';
+                    themeToggle.setAttribute('aria-label', 'Theme: Light (click for Dark)');
+                    themeToggle.setAttribute('title', 'Theme: Light (click for Dark)');
                     localStorage.setItem('theme', 'light');
                 } else {
                     // Auto mode - remove data-theme to let CSS media query handle it
                     html.removeAttribute('data-theme');
-                    themeIcon.textContent = prefersDark ? '☀️' : '🌙';
+                    themeIcon.textContent = '🔄';
+                    themeToggle.setAttribute('aria-label', 'Theme: Auto (click for Light)');
+                    themeToggle.setAttribute('title', 'Theme: Auto (click for Light)');
                     localStorage.setItem('theme', 'auto');
                 }
             }
@@ -599,24 +605,17 @@
                 setTheme('auto');
             }
 
-            // Theme toggle functionality
+            // Theme toggle functionality - cycles through light → dark → auto
             themeToggle.addEventListener('click', () => {
                 const currentTheme = html.getAttribute('data-theme');
                 
-                if (!currentTheme) {
-                    // Currently auto, switch to opposite of system preference
-                    setTheme(prefersDark ? 'light' : 'dark');
-                } else if (currentTheme === 'light') {
+                if (currentTheme === 'light') {
                     setTheme('dark');
+                } else if (currentTheme === 'dark') {
+                    setTheme('auto');
                 } else {
+                    // Currently auto, switch to light
                     setTheme('light');
-                }
-            });
-
-            // Listen for system theme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                if (!html.getAttribute('data-theme')) {
-                    themeIcon.textContent = e.matches ? '☀️' : '🌙';
                 }
             });
 
