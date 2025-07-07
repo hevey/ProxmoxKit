@@ -25,6 +25,19 @@
             --spacing-xl: 3rem;
         }
 
+        /* Light theme (explicit) */
+        [data-theme="light"] {
+            --background-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --border-color: #e5e5e7;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Dark theme (explicit) */
         [data-theme="dark"] {
             --background-color: #1a1a1a;
             --surface-color: #2a2a2a;
@@ -36,8 +49,9 @@
             --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
 
+        /* Auto theme - follows system preference */
         @media (prefers-color-scheme: dark) {
-            :root {
+            :root:not([data-theme]) {
                 --background-color: #1a1a1a;
                 --surface-color: #2a2a2a;
                 --text-primary: #ffffff;
@@ -114,7 +128,7 @@
         @media (max-width: 768px) {
             .preview-banner {
                 font-size: 0.8rem;
-                padding: var(--spacing-xs) var(--spacing-sm);
+                padding: 0.25rem var(--spacing-sm);
             }
         }
 
@@ -526,6 +540,7 @@
                     themeIcon.textContent = '🌙';
                     localStorage.setItem('theme', 'light');
                 } else {
+                    // Auto mode - remove data-theme to let CSS media query handle it
                     html.removeAttribute('data-theme');
                     themeIcon.textContent = prefersDark ? '☀️' : '🌙';
                     localStorage.setItem('theme', 'auto');
@@ -538,6 +553,7 @@
             } else if (savedTheme === 'light') {
                 setTheme('light');
             } else {
+                // Default to auto mode
                 setTheme('auto');
             }
 
