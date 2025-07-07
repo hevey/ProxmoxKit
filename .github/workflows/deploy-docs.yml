@@ -63,6 +63,12 @@ jobs:
           fi
         done
         
+        # Copy the index.html from docs folder if it exists
+        if [ -f "docs/index.html" ]; then
+          cp docs/index.html docs-final/
+          echo "✅ Copied custom index.html from docs folder"
+        fi
+        
         # Verify we have index.html at root
         if [ -f "docs-final/index.html" ]; then
           echo "✅ index.html found at root"
