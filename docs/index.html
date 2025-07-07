@@ -212,7 +212,7 @@
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: var(--spacing-lg);
             margin-bottom: var(--spacing-xl);
         }
@@ -377,11 +377,53 @@
             
             .features-grid {
                 grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+            
+            .feature-card {
+                padding: var(--spacing-md);
             }
             
             .cta-buttons {
                 flex-direction: column;
                 align-items: center;
+            }
+            
+            .button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: var(--spacing-sm);
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .features-grid {
+                gap: var(--spacing-sm);
+            }
+            
+            .feature-card {
+                padding: var(--spacing-sm);
+            }
+            
+            .feature-card h3 {
+                font-size: 1.1rem;
+            }
+            
+            .feature-card .icon {
+                width: 2rem;
+                height: 2rem;
+                font-size: 1.2rem;
             }
         }
     </style>
