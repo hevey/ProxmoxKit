@@ -128,4 +128,116 @@ public class NodeService: BaseService {
             throw ProxmoxError.decodingError(error)
         }
     }
+    
+    /// Changes the status of a specific node (e.g., reboot or shutdown).
+    /// - Parameters:
+    ///   - nodeName: The name of the node to operate on.
+    ///   - action: The action to perform ("reboot" or "shutdown").
+    /// - Throws: ProxmoxError if the request fails.
+    public func status(_ nodeName: String, action: String) async throws {
+        try ensureAuthenticated()
+        let url = buildURL(path: "nodes/\(nodeName)/status")
+        let parameters = ["command": action]
+        let body = encodeFormData(parameters)
+        let (data, _) = try await httpClient.post(url, body: body, contentType: "application/x-www-form-urlencoded")
+        do {
+            let json = try JSONSerialization.jsonObject(with: data, options: [])
+            if let response = json as? [String: Any], response["data"] != nil {
+                return
+            } else {
+                throw ProxmoxError.invalidResponse
+            }
+        } catch {
+            throw ProxmoxError.decodingError(error)
+        }
+    }
+
+    /// Starts all VMs and containers on a node.
+    /// - Parameters:
+    ///   - nodeName: The name of the node.
+    ///   - vms: Comma-separated list of VM/CT IDs to start (optional, if not specified all are started).
+    ///   - force: Force start even if already running.
+    /// - Throws: ProxmoxError if the request fails.
+    public func startAll(_ nodeName: String, vms: String? = nil, force: Bool = false) async throws {
+        try ensureAuthenticated()
+        let url = buildURL(path: "nodes/\(nodeName)/startall")
+        
+        var parameters: [String: Any] = [:]
+        if let vms = vms {
+            parameters["vms"] = vms
+        }
+        if force {
+            parameters["force"] = "1"
+        }
+        
+        let body = parameters.isEmpty ? nil : encodeFormData(parameters)
+        _ = try await httpClient.post(url, body: body, contentType: "application/x-www-form-urlencoded")
+    }
+
+    /// Suspends all VMs and containers on a node.
+    /// - Parameters:
+    ///   - nodeName: The name of the node.
+    ///   - vms: Comma-separated list of VM/CT IDs to suspend (optional, if not specified all are suspended).
+    /// - Throws: ProxmoxError if the request fails.
+    public func suspendAll(_ nodeName: String, vms: String? = nil) async throws {
+        try ensureAuthenticated()
+        let url = buildURL(path: "nodes/\(nodeName)/suspendall")
+        
+        var parameters: [String: Any] = [:]
+        if let vms = vms {
+            parameters["vms"] = vms
+        }
+        
+        let body = parameters.isEmpty ? nil : encodeFormData(parameters)
+        _ = try await httpClient.post(url, body: body, contentType: "application/x-www-form-urlencoded")
+    }
+
+    /// Stops all VMs and containers on a node.
+    /// - Parameters:
+    ///   - nodeName: The name of the node.
+    ///   - vms: Comma-separated list of VM/CT IDs to stop (optional, if not specified all are stopped).
+    ///   - force: Force stop even if already stopped.
+    ///   - timeout: Maximum time (in seconds) to wait for shutdown (default: 180, range: 0-7200).
+    /// - Throws: ProxmoxError if the request fails or timeout is invalid.
+    public func stopAll(_ nodeName: String, vms: String? = nil, force: Bool = false, timeout: Int = 180) async throws {
+        try ensureAuthenticated()
+        
+        // Validate timeout parameter
+        guard timeout >= 0 && timeout <= 7200 else {
+            throw ProxmoxError.invalidConfiguration("Timeout must be between 0 and 7200 seconds")
+        }
+        
+        let url = buildURL(path: "nodes/\(nodeName)/stopall")
+        
+        var parameters: [String: Any] = [:]
+        if let vms = vms {
+            parameters["vms"] = vms
+        }
+        if force {
+            parameters["force"] = "1"
+        }
+        parameters["timeout"] = "\(timeout)"
+        
+        let body = encodeFormData(parameters)
+        _ = try await httpClient.post(url, body: body, contentType: "application/x-www-form-urlencoded")
+    }
+
+    /// Restarts all VMs and containers on a node (convenience method: stop then start).
+    /// Note: This is not a native Proxmox API endpoint but a convenience method that performs stopAll followed by startAll.
+    /// - Parameters:
+    ///   - nodeName: The name of the node.
+    ///   - vms: Comma-separated list of VM/CT IDs to restart (optional, if not specified all are restarted).
+    ///   - force: Force restart operations.
+    ///   - timeout: Maximum time (in seconds) to wait for shutdown during stop phase (default: 180, range: 0-7200).
+    /// - Throws: ProxmoxError if the request fails or timeout is invalid.
+    public func restartAll(_ nodeName: String, vms: String? = nil, force: Bool = false, timeout: Int = 180) async throws {
+        // Stop all first
+        try await stopAll(nodeName, vms: vms, force: force, timeout: timeout)
+        
+        // Wait a moment for proper shutdown
+        try await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds
+        
+        // Then start all
+        try await startAll(nodeName, vms: vms, force: force)
+    }
 }

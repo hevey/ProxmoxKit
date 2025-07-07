@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents an authentication ticket returned by the Proxmox API.
-public struct Ticket: Decodable {
+public struct Ticket: Decodable, Equatable {
     /// The authenticated username.
     public let username: String
     
