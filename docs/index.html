@@ -3,143 +3,453 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProxmoxKit Documentation</title>
+    <title>ProxmoxKit - Modern Swift Library for Proxmox VE</title>
+    <meta name="description" content="A modern Swift library for interacting with the Proxmox Virtual Environment API. Features service-oriented architecture, async/await support, and comprehensive documentation.">
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
+        :root {
+            --primary-color: #007aff;
+            --primary-dark: #0056b3;
+            --secondary-color: #5856d6;
+            --background-color: #f8f9fa;
+            --surface-color: #ffffff;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --border-color: #e5e5e7;
+            --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-heavy: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 2rem;
-            background: #f8f9fa;
+            padding: 0;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: var(--spacing-lg);
         }
-        h1 {
-            color: #333;
-            border-bottom: 2px solid #007aff;
-            padding-bottom: 0.5rem;
+
+        .hero {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
         }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--spacing-xl);
+        }
+
         .button {
-            display: inline-block;
-            background: #007aff;
-            color: white;
-            padding: 12px 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 14px 28px;
+            border-radius: var(--border-radius);
             text-decoration: none;
-            border-radius: 6px;
-            margin: 10px 0;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
         }
-        .button:hover {
-            background: #0056b3;
+
+        .button-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-medium);
         }
-        .feature {
-            background: #f8f9fa;
-            padding: 1rem;
-            margin: 1rem 0;
-            border-radius: 6px;
-            border-left: 4px solid #007aff;
+
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-heavy);
         }
-        code {
-            background: #f1f3f4;
-            padding: 2px 6px;
-            border-radius: 3px;
+
+        .button-secondary {
+            background: var(--surface-color);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            box-shadow: var(--shadow-light);
+        }
+
+        .button-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-1px);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .feature-card {
+            background: var(--surface-color);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .feature-card h3 {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-primary);
+        }
+
+        .feature-card .icon {
+            font-size: 1.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 8px;
+            color: white;
+        }
+
+        .feature-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-card li {
+            padding: var(--spacing-sm) 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-card li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            line-height: 1.5;
+        }
+
+        .code-block .comment {
+            color: #6a994e;
+        }
+
+        .code-block .keyword {
+            color: #569cd6;
+        }
+
+        .code-block .string {
+            color: #ce9178;
+        }
+
+        .installation-code {
+            background: var(--background-color);
+            border: 2px dashed var(--border-color);
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
             font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            text-align: center;
+            margin: var(--spacing-md) 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-xl) 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: var(--spacing-md);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: var(--spacing-xl);
+        }
+
+        .footer p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .container {
+                padding: var(--spacing-md);
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>ProxmoxKit Documentation</h1>
-        
-        <p>A modern Swift library for interacting with the Proxmox Virtual Environment API.</p>
-        
-        <a href="./documentation/proxmoxkit/" class="button">📚 View Documentation</a>
-        <a href="https://github.com/hevey/ProxmoxKit" class="button">💻 GitHub Repository</a>
-        
-        <div class="feature">
-            <h3>🚀 Key Features</h3>
-            <ul>
-                <li>Service-oriented architecture for clean API organization</li>
-                <li>Modern async/await support for all operations</li>
-                <li>Type-safe Swift interfaces with comprehensive error handling</li>
-                <li>Bulk operations for node management (start, stop, suspend, restart)</li>
-                <li>Automatic CSRF token handling for secure write operations</li>
-                <li>Comprehensive DocC documentation with examples</li>
-            </ul>
+        <div class="hero">
+            <h1>ProxmoxKit</h1>
+            <p class="subtitle">A modern Swift library for interacting with the Proxmox Virtual Environment API. Built with service-oriented architecture and comprehensive async/await support.</p>
+            
+            <div class="cta-buttons">
+                <a href="./documentation/proxmoxkit/" class="button button-primary" id="docs-button">
+                    📚 View Documentation
+                </a>
+                <a href="https://github.com/hevey/ProxmoxKit" class="button button-secondary">
+                    💻 GitHub Repository
+                </a>
+            </div>
         </div>
-        
-        <div class="feature">
-            <h3>📦 Installation</h3>
-            <p>Add ProxmoxKit to your Swift package dependencies:</p>
-            <code>.package(url: "https://github.com/hevey/ProxmoxKit.git", branch: "main")</code>
-        </div>
-        
-        <div class="feature">
-            <h3>⚡ Quick Start</h3>
-            <pre><code>import ProxmoxKit
 
-let config = ProxmoxConfig(
-    host: "https://proxmox.example.com:8006",
-    username: "root@pam",
-    password: "password"
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">🚀</span>
+                    Modern Architecture
+                </h3>
+                <ul>
+                    <li>Service-oriented design for clean API organization</li>
+                    <li>Full async/await support for all operations</li>
+                    <li>Type-safe Swift interfaces with comprehensive error handling</li>
+                    <li>Automatic CSRF token handling for secure operations</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">⚡</span>
+                    Powerful Features
+                </h3>
+                <ul>
+                    <li>Bulk operations for node management</li>
+                    <li>Start, stop, suspend, and restart VMs</li>
+                    <li>Container lifecycle management</li>
+                    <li>Cluster monitoring and statistics</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">📖</span>
+                    Developer Experience
+                </h3>
+                <ul>
+                    <li>Comprehensive DocC documentation</li>
+                    <li>Rich code examples and tutorials</li>
+                    <li>Swift Package Manager integration</li>
+                    <li>Active community support</li>
+                </ul>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">📦</span>
+                    Quick Installation
+                </h3>
+                <p>Add ProxmoxKit to your Swift package dependencies:</p>
+                <div class="installation-code">
+                    .package(url: "https://github.com/hevey/ProxmoxKit.git", branch: "main")
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">💡</span>
+                    Quick Start Example
+                </h3>
+                <div class="code-block">
+<span class="keyword">import</span> ProxmoxKit
+
+<span class="comment">// Configure your Proxmox connection</span>
+<span class="keyword">let</span> config = ProxmoxConfig(
+    host: <span class="string">"https://proxmox.example.com:8006"</span>,
+    username: <span class="string">"root@pam"</span>,
+    password: <span class="string">"password"</span>
 )
 
-let client = ProxmoxClient(config: config)
-try await client.authenticate(username: config.username, password: config.password)
+<span class="keyword">let</span> client = ProxmoxClient(config: config)
+<span class="keyword">try await</span> client.authenticate()
 
-// List all nodes
-let nodes = try await client.nodes.list()
+<span class="comment">// List all nodes</span>
+<span class="keyword">let</span> nodes = <span class="keyword">try await</span> client.nodes.list()
 
-// Bulk operations
-try await client.nodes.stopAll("pve", timeout: 300)</code></pre>
+<span class="comment">// Bulk operations</span>
+<span class="keyword">try await</span> client.nodes.stopAll(<span class="string">"pve"</span>, timeout: 300)
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3>
+                    <span class="icon">🎯</span>
+                    Documentation Sections
+                </h3>
+                <ul>
+                    <li><strong>Getting Started</strong> - Authentication and configuration</li>
+                    <li><strong>Services</strong> - Node, VM, Container, and Cluster management</li>
+                    <li><strong>Models</strong> - Data structures for Proxmox resources</li>
+                    <li><strong>Error Handling</strong> - Comprehensive error types</li>
+                </ul>
+            </div>
         </div>
-        
-        <div class="feature">
-            <h3>📖 Documentation Sections</h3>
-            <ul>
-                <li><strong>Getting Started</strong> - Authentication and configuration guides</li>
-                <li><strong>Services</strong> - Node, VM, Container, and Cluster management</li>
-                <li><strong>Models</strong> - Data structures for Proxmox resources</li>
-                <li><strong>Error Handling</strong> - Comprehensive error types and handling</li>
-            </ul>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Swift 6.0</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">iOS 15+</div>
+                <div class="stat-label">Platform</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">macOS 12+</div>
+                <div class="stat-label">Platform</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">DocC</div>
+                <div class="stat-label">Documentation</div>
+            </div>
         </div>
-        
-        <hr style="margin: 2rem 0; border: none; border-top: 1px solid #eee;">
-        
-        <p style="text-align: center; color: #666; font-size: 0.9em;">
-            Built with ❤️ using Swift and DocC • 
-            <a href="https://github.com/hevey/ProxmoxKit/issues">Report Issues</a>
-        </p>
+
+        <div class="footer">
+            <p>
+                Built with ❤️ using Swift and DocC • 
+                <a href="https://github.com/hevey/ProxmoxKit/issues">Report Issues</a> • 
+                <a href="https://github.com/hevey/ProxmoxKit/blob/main/LICENSE">MIT License</a>
+            </p>
+        </div>
     </div>
-    
+
     <script>
         // Auto-redirect to documentation if it exists
         fetch('./documentation/proxmoxkit/')
             .then(response => {
                 if (response.ok) {
                     // Documentation is available, show a subtle indicator
-                    const button = document.querySelector('.button');
-                    button.style.animation = 'pulse 2s infinite';
+                    const button = document.getElementById('docs-button');
+                    if (button) {
+                        button.classList.add('pulse');
+                    }
                 }
             })
             .catch(() => {
                 // Documentation not yet available
                 console.log('Documentation is building...');
             });
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
     </script>
-    
-    <style>
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-    </style>
 </body>
 </html>
