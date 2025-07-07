@@ -44,7 +44,7 @@ jobs:
         xcrun docc process-archive transform-for-static-hosting \
           .build/Build/Products/Debug/ProxmoxKit.doccarchive \
           --output-path docs-temp \
-          --hosting-base-path ""
+          --hosting-base-path ProxmoxKit
         
         # Create final docs directory
         mkdir -p docs-final
