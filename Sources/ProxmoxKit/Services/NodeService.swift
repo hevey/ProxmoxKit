@@ -1,6 +1,48 @@
 import Foundation
 
 /// Service for managing Proxmox nodes.
+///
+/// `NodeService` provides comprehensive node management capabilities including:
+/// - Node listing and status monitoring
+/// - Virtual machine and container management on nodes
+/// - Bulk operations for starting, stopping, and suspending VMs/containers
+/// - Node administration tasks
+///
+/// ## Topics
+///
+/// ### Node Information
+/// - ``list()``
+/// - ``get(_:)``
+/// - ``getStatus(_:)``
+/// - ``getVersion(_:)``
+///
+/// ### Resource Management
+/// - ``getVirtualMachines(_:)``
+/// - ``getContainers(_:)``
+///
+/// ### Bulk Operations
+/// - ``startAll(_:vms:force:)``
+/// - ``stopAll(_:vms:force:timeout:)``
+/// - ``suspendAll(_:vms:)``
+/// - ``restartAll(_:vms:force:timeout:)``
+///
+/// ### Node Administration
+/// - ``status(_:action:)``
+/// - ``executeCommand(_:command:)``
+///
+/// ## Example Usage
+///
+/// ```swift
+/// // List all nodes
+/// let nodes = try await nodeService.list()
+/// 
+/// // Get VMs on a specific node
+/// let vms = try await nodeService.getVirtualMachines("pve")
+/// 
+/// // Bulk operations
+/// try await nodeService.stopAll("pve", timeout: 300)
+/// try await nodeService.startAll("pve", force: true)
+/// ```
 public class NodeService: BaseService {
     
     /// Lists all nodes in the cluster.

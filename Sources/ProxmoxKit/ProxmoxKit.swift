@@ -1,7 +1,28 @@
 import Foundation
 
 // MARK: - Main Export
-// Export the new service-oriented client as the primary interface
+
+/// A type alias for ``ProxmoxClient`` providing the primary interface to ProxmoxKit.
+///
+/// ProxmoxKit is a modern Swift library for interacting with Proxmox Virtual Environment.
+/// Use this as the main entry point for all Proxmox API operations.
+///
+/// ## Topics
+///
+/// ### Creating a Client
+/// - ``ProxmoxClient/init(config:)``
+/// - ``ProxmoxClient/create(host:port:useHTTPS:)``
+///
+/// ### Authentication
+/// - ``ProxmoxClient/authenticate(username:password:)``
+/// - ``ProxmoxSession``
+/// - ``Ticket``
+///
+/// ### Services
+/// - ``ProxmoxClient/nodes``
+/// - ``ProxmoxClient/vms``
+/// - ``ProxmoxClient/containers``
+/// - ``ProxmoxClient/cluster``
 public typealias ProxmoxKit = ProxmoxClient
 
 // MARK: - Re-exports for convenience

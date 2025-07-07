@@ -22,7 +22,43 @@ private final class InsecureURLSessionDelegate: NSObject, URLSessionDelegate, @u
     }
 }
 
-/// Main client for interacting with the Proxmox API with service-oriented architecture.
+/// Main client for interacting with the Proxmox Virtual Environment API.
+///
+/// `ProxmoxClient` provides a service-oriented architecture for managing Proxmox VE resources
+/// including nodes, virtual machines, containers, and cluster operations. It handles authentication,
+/// session management, and provides type-safe access to the Proxmox API.
+///
+/// ## Usage
+///
+/// ```swift
+/// let config = ProxmoxConfig(
+///     host: "https://proxmox.example.com:8006",
+///     username: "root@pam",
+///     password: "password"
+/// )
+/// 
+/// let client = ProxmoxClient(config: config)
+/// try await client.authenticate(username: config.username, password: config.password)
+/// 
+/// // Use services to interact with Proxmox
+/// let nodes = try await client.nodes.list()
+/// ```
+///
+/// ## Topics
+///
+/// ### Creating a Client
+/// - ``init(config:)``
+/// - ``create(host:port:useHTTPS:)``
+///
+/// ### Authentication
+/// - ``authenticate(username:password:)``
+/// - ``isAuthenticated``
+///
+/// ### Services
+/// - ``nodes``
+/// - ``vms``
+/// - ``containers``
+/// - ``cluster``
 public class ProxmoxClient: @unchecked Sendable {
     /// Configuration for the client.
     public let config: ProxmoxConfig
