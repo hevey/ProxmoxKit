@@ -40,40 +40,40 @@ jobs:
           
     - name: Process DocC Archive
       run: |
-        # Export the DocC archive to static HTML
+        # Export the DocC archive to static HTML for root hosting
         xcrun docc process-archive transform-for-static-hosting \
           .build/Build/Products/Debug/ProxmoxKit.doccarchive \
-          --output-path docs-generated \
+          --output-path docs-temp \
           --hosting-base-path ProxmoxKit
         
-        # Copy the existing docs directory (with our custom index.html) to final location
-        cp -r docs docs-final
+        # Create final docs directory
+        mkdir -p docs-final
         
-        # Merge the generated documentation into the existing docs structure
-        if [ -d "docs-generated/documentation" ]; then
-          cp -r docs-generated/documentation docs-final/
-          echo "Copied DocC documentation"
+        # Move the ProxmoxKit documentation to root
+        if [ -d "docs-temp/documentation/proxmoxkit" ]; then
+          cp -r docs-temp/documentation/proxmoxkit/* docs-final/
+          echo "✅ DocC documentation moved to root"
         fi
         
-        # Copy any additional assets
+        # Copy shared assets to root
         for dir in css js img data; do
-          if [ -d "docs-generated/$dir" ]; then
-            cp -r "docs-generated/$dir" docs-final/
+          if [ -d "docs-temp/$dir" ]; then
+            cp -r "docs-temp/$dir" docs-final/
             echo "Copied $dir directory"
           fi
         done
         
+        # Verify we have index.html at root
+        if [ -f "docs-final/index.html" ]; then
+          echo "✅ index.html found at root"
+        else
+          echo "❌ No index.html at root"
+          find docs-final/ -name "index.html" -type f
+        fi
+        
         # List final structure
         echo "Final docs structure:"
         ls -la docs-final/
-        
-        if [ -f "docs-final/index.html" ]; then
-          echo "✅ Custom index.html preserved"
-        fi
-        
-        if [ -d "docs-final/documentation" ]; then
-          echo "✅ DocC documentation available"
-        fi
           
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
