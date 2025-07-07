@@ -43,42 +43,13 @@ jobs:
         # Export the DocC archive to static HTML for root hosting
         xcrun docc process-archive transform-for-static-hosting \
           .build/Build/Products/Debug/ProxmoxKit.doccarchive \
-          --output-path docs-temp \
+          --output-path docs \
           --hosting-base-path ProxmoxKit
-        
-        # Create final docs directory
-        mkdir -p docs-final
-        
-        # Move the ProxmoxKit documentation to root
-        if [ -d "docs-temp/documentation/proxmoxkit" ]; then
-          cp -r docs-temp/documentation/proxmoxkit/* docs-final/
-          echo "✅ DocC documentation moved to root"
-        fi
-        
-        # Copy shared assets to root
-        for dir in css js img data; do
-          if [ -d "docs-temp/$dir" ]; then
-            cp -r "docs-temp/$dir" docs-final/
-            echo "Copied $dir directory"
-          fi
-        done
-        
-        # Verify we have index.html at root
-        if [ -f "docs-final/index.html" ]; then
-          echo "✅ index.html found at root"
-        else
-          echo "❌ No index.html at root"
-          find docs-final/ -name "index.html" -type f
-        fi
-        
-        # List final structure
-        echo "Final docs structure:"
-        ls -la docs-final/
           
     - name: Upload Pages Artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: docs-final
+        path: docs
 
   deploy:
     if: github.ref == 'refs/heads/main'
